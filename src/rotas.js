@@ -1,12 +1,14 @@
 import React from 'react';
-import { Route, Switch, HashRouter } from 'react-router-dom';
-import Login from './views/login'
+import { HashRouter, Route, Switch } from 'react-router-dom';
 import CadastroUsuario from './views/CadastroUsuario';
+import Login from './views/login';
+import Home from './views/home';
 
 function rotas() {
     return (
         <HashRouter>
             <Switch>
+                <Route path='/Home' component={Home} />
                 <Route path='/Login' component={Login} />
                 <Route path='/CadastroUsuario' component={CadastroUsuario} />
             </Switch>
