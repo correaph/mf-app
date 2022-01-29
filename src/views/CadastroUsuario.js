@@ -1,8 +1,15 @@
 import React from 'react';
 import Card from '../components/card'
 import { withRouter } from 'react-router-dom';
+import UsuarioService from '../app/service/usuarioService';
+import { mensagemErro, mostrarMensagem } from '../components/toastr';
 
 class CadastroUsuario extends React.Component {
+
+    constructor() {
+        super();
+        this.service = new UsuarioService();
+    }
 
     state = {
         nome: '',
@@ -12,7 +19,41 @@ class CadastroUsuario extends React.Component {
     }
 
     cadastrar = () => {
-        console.log(this.state);
+        const msgs = this.validar();
+        if (msgs && msgs.length > 0) {
+            msgs.forEach((msg, index) => {
+                mensagemErro(msg);
+            });
+            return false;
+        }
+        this.service.salvar({
+            nome: this.state.nome.trim(),
+            email: this.state.email.trim(),
+            senha: this.state.senha1.trim()
+        }).then(response => {
+            mostrarMensagem("Cadastro Usuário", "Usuário cadastrado! Faça login para acessar o sistema.", "info");
+            this.props.history.push('/login');
+        }).catch(erro => {
+            mensagemErro(erro.response.data);
+        });
+    }
+
+    validar() {
+        const msgs = [];
+        if (!this.state.nome) {
+            msgs.push('O campo Nome é obrigatório!');
+        }
+        if (!this.state.email) {
+            msgs.push('O campo Email é obrigatório!');
+        } else if (!this.state.email.match(/^[a-z0-9.]+@[a-z0-9]+\.[a-z]/)) {
+            msgs.push('Campo Email inválido!');
+        }
+        if (!this.state.senha1 || !this.state.senha2) {
+            msgs.push("Os campos Senha são obrigatórios!");
+        } else if (this.state.senha1 !== this.state.senha2) {
+            msgs.push("O campo senha não confere, precisam ser iguais!")
+        }
+        return msgs;
     }
 
     cancelar = () => {

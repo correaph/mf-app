@@ -1,7 +1,13 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import UsuarioService from '../app/service/usuarioService';
 
 class Home extends React.Component {
+
+    constructor() {
+        super();
+        this.usuarioService = new UsuarioService(); 
+    }
 
     cadastrarUsr = () => {
         this.props.history.push('/CadastrarUsuario');
@@ -9,6 +15,13 @@ class Home extends React.Component {
 
     state = {
         saldo: 0
+    }
+
+    componentDidMount() {
+        const usuarioLogado = JSON.parse(localStorage.getItem('_usuario_logado'));
+        this.usuarioService.obterSaldoPorUsuario(usuarioLogado.id)
+            .then(response => { this.setState({ saldo: response.data }) })
+            .catch(erro => { console.log(erro.response) });
     }
 
     render() {

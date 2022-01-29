@@ -3,6 +3,8 @@ import Rotas from './rotas'
 import 'bootswatch/dist/flatly/bootstrap.css'
 import './custom.css'
 import NavBar from "./components/navbar";
+import 'toastr/build/toastr.min.js';
+import 'toastr/build/toastr.css';
 
 class App extends React.Component {
 

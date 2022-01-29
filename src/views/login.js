@@ -1,17 +1,32 @@
 import React from "react";
 import Card from '../components/card';
-import {withRouter} from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import UsuarioService from '../app/service/usuarioService';
+import { mensagemErro } from '../components/toastr';
 
 class Login extends React.Component {
 
     state = {
         email: '',
-        senha: ''
+        senha: '',
     };
 
+    constructor() {
+        super();
+        this.service = new UsuarioService();
+    }
+
     entrar = () => {
-        console.log(this.state.email);
-        console.log(this.state.senha);
+        this.service.autenticar({
+            email: this.state.email,
+            senha: this.state.senha
+        }).then(response => {
+            console.log(response);
+            localStorage.setItem("_usuario_logado", JSON.stringify(response.data));
+            this.props.history.push('/home');
+        }).catch(erro => {
+            mensagemErro("Email e/ou senha inválido!");
+        })
     };
 
     prepareCadastrar = () => {
@@ -78,4 +93,3 @@ class Login extends React.Component {
 };
 
 export default withRouter(Login);
-
